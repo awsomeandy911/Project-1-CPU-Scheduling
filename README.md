@@ -1,5 +1,5 @@
 # cs3113fa21-project1
-Project 0: Character counting
+Project 1: CPU Scheduling
 CS 3113 Fall 2021
 Andy Le
 
