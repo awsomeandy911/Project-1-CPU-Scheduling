@@ -54,7 +54,8 @@ LinkedList * unique(LinkedList *node, int p)
 		return unique(node->next, p);
 }
 
-void search_for_non_vol(LinkedList *head)
+//search for non voulntary context switches
+void searchNonVoluntary(LinkedList *head)
  {
 	LinkedList * current = head;
 	while (head != NULL && current != NULL) 
@@ -88,7 +89,8 @@ void search_for_non_vol(LinkedList *head)
 	}
 }
 
-int calculate_nonvol(LinkedList *head)
+//calculates the non voluntary context switch
+int getNonVoluntary(LinkedList *head)
  {
 	int sum = 0;
 	while(head != NULL) 
@@ -131,6 +133,7 @@ void insert(LinkedList **head, int pid_t, int burst_t, int priority_t)
 	}
 
 }
+
 int main(int argc, char *argv[]) 
 {
 
@@ -216,7 +219,7 @@ int main(int argc, char *argv[])
 	}
 
 	//goes through the list to find Nonvoluntary
-	search_for_non_vol(LinkedList);	
+	searchNonVoluntary(LinkedList);	
 
 	//loop to add all stats for the indices that pertain to unique pid
 	for(int i = 0; i < unique_pid; i++) 
@@ -238,7 +241,7 @@ int main(int argc, char *argv[])
 	}
 
 	// calculate non-voluntary switch
-	nonvol = calculate_nonvol(LinkedList);	
+	nonvol = getNonVoluntary(LinkedList);	
 
     //calculate CPU utilization
     float CPU = 100 / num_process;
