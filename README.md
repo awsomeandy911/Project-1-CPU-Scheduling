@@ -9,8 +9,11 @@ Command "make clean" will clear any executables generated.
 Command "cat testfile.txt|./project0" will tests inputs in project0.c.
 
 #Functions
-swap - swap function that is used by built-in c function (quick sort)
-print - prints and sorts out unicode characters
+exists - checks if pid exists in the linked list
+unique - checks if pid is unique in the linked list
+searchNonVoluntary - searchs for non voulntary context switches
+getNonVoluntary - calculates the non voluntary context switch
+insert - insert into linked list
 
 #Bugs
 No bugs were found
