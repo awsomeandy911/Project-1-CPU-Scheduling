@@ -18,7 +18,7 @@ struct LinkedList
 	int pid;
 	int burst;
 	int priority;
-	int nonvol;
+	int nonVoluntary;
 	struct LinkedList *next;
 }; typedef struct LinkedList LinkedList;
 
@@ -74,15 +74,15 @@ void searchNonVoluntary(LinkedList *head)
 			//if the current pid exists within head as of now
 			if ((prevPID != current->pidUnique.value) && (exists(head->next, prevPID) == 1) && (current->next != NULL)) 
 			{
-				head->nonvol = 1;
+				head->nonVoluntary = 1;
 			}
 			else if (prevPID == current->pidUnique.value) 
 			{
-				head->nonvol = 0;
+				head->nonVoluntary = 0;
 			}
 			else if (exists(head->next, prevPID) == 0) 
 			{ 
-				head->nonvol = 0;
+				head->nonVoluntary = 0;
 			}
 		}
 		head = head->next;
@@ -95,7 +95,7 @@ int getNonVoluntary(LinkedList *head)
 	int sum = 0;
 	while(head != NULL) 
 	{
-		sum += head->nonvol;
+		sum += head->nonVoluntary;
 		head = head->next;
 	}
 	return sum;
@@ -111,7 +111,7 @@ void insert(LinkedList **head, int pid_t, int burst_t, int priority_t)
 		(*head)->burst = burst_t;
 		(*head)->priority = priority_t;
 		(*head)->pidUnique.totalRunTime = 0;
-		(*head)->nonvol = 0;
+		(*head)->nonVoluntary = 0;
 		(*head)->next = NULL;
 	}
 	else 
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
 	FILE *fp;
 	char process[1024];
-	char list_instructions[1024];
+	char instructionList[1024];
 	char secondline[1024];
 	const char whitespace[2] = " ";
 	struct LinkedList *LinkedList = NULL;
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 
 	//read first line then convert to int
 	fgets(process, sizeof(process), fp);	
-	int num_process = atoi(process);
+	int numProcess = atoi(process);
 
 	//read second line then store values accordingly
 	fgets(secondline, sizeof(secondline), fp);
@@ -172,51 +172,51 @@ int main(int argc, char *argv[])
 
 	
 	//holds the stats for each pidUnique in multiple arrays
-    int burst_time[pidUnique];
-    int completion_time[pidUnique];
-	int wait_time[pidUnique];
-	int arrival_time[pidUnique];
-	int first_time[pidUnique];
-	int response_time[pidUnique];
-    memset(&burst_time, 0, pidUnique*sizeof(int));
-    memset(&completion_time, 0, pidUnique*sizeof(int));
-	memset(&wait_time, 0, pidUnique*sizeof(int));
-	memset(&arrival_time, 0, pidUnique*sizeof(int));
-	memset(&first_time, 0, pidUnique*sizeof(int));
-	memset(&response_time, 0, pidUnique*sizeof(int));
+    int burstTime[pidUnique];
+    int completionTime[pidUnique];
+	int waitTime[pidUnique];
+	int arrivalTime[pidUnique];
+	int firstTime[pidUnique];
+	int responseTime[pidUnique];
+    memset(&burstTime, 0, pidUnique*sizeof(int));
+    memset(&completionTime, 0, pidUnique*sizeof(int));
+	memset(&waitTime, 0, pidUnique*sizeof(int));
+	memset(&arrivalTime, 0, pidUnique*sizeof(int));
+	memset(&firstTime, 0, pidUnique*sizeof(int));
+	memset(&responseTime, 0, pidUnique*sizeof(int));
 
-	int pid_c;
-	int burst_c;
-	int priority_c;
-	int nonvol = 0;
-    int total_burst = 0;
-    int total_turnaround_time = 0;
-	int total_wait_time = 0;
-	int total_response_time = 0;
+	int pid;
+	int burst;
+	int priority;
+	int nonVoluntary = 0;
+    int totalBurst = 0;
+    int totalTurnAround = 0;
+	int totalWaitTime = 0;
+	int totalResponseTime = 0;
 
 	//reads in the instructions
-	while(fgets(list_instructions, sizeof(list_instructions), fp) != NULL) 
+	while(fgets(instructionList, sizeof(instructionList), fp) != NULL) 
 	{
 		//sets the variables to read in
-		sscanf(list_instructions, "%d %d %d", &pid_c, &burst_c, &priority_c);
+		sscanf(instructionList, "%d %d %d", &pid, &burst, &priority);
 
 		//calculates total burst with each instruction
-        total_burst += burst_c;
+        totalBurst += burst;
 
 		//variables used for turnaround time
-        burst_time[pid_c - 1] += burst_c;
-       	completion_time[pid_c - 1] = total_burst;
+        burstTime[pid - 1] += burst;
+       	completionTime[pid - 1] = totalBurst;
 
-		//check to see if this is the first time pid_c has shown up
-		if(arrival_time[pid_c - 1] == 0) 
+		//check to see if this is the first time pid has shown up
+		if(arrivalTime[pid - 1] == 0) 
 		{
 			//set response time to burst recieved and start time to total burst
-			arrival_time[pid_c - 1] = burst_c;
-			first_time[pid_c - 1] = total_burst;
+			arrivalTime[pid - 1] = burst;
+			firstTime[pid - 1] = totalBurst;
 		}
 
 		//insert data into linked list
-		insert(&LinkedList, pid_c, burst_c, priority_c);
+		insert(&LinkedList, pid, burst, priority);
 	}
 
 	//goes through the list to find Nonvoluntary
@@ -226,41 +226,41 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < pidUnique; i++) 
 	{
         //total turnaround time = each of unique PID's completion time
-        total_turnaround_time += completion_time[i];
+        totalTurnAround += completionTime[i];
 
         //waiting time = turnaround time - its burst time
-        wait_time[i] = completion_time[i] - burst_time[i];
+        waitTime[i] = completionTime[i] - burstTime[i];
 
 		//sum of each pid's wait time
-        total_wait_time += wait_time[i];
+        totalWaitTime += waitTime[i];
 
 		//response time = total burst time - current burst it took
-		response_time[i] = first_time[i] - arrival_time[i];
+		responseTime[i] = firstTime[i] - arrivalTime[i];
 
 		//sum of each pid's response time
-		total_response_time += response_time[i];
+		totalResponseTime += responseTime[i];
 	}
 
 	// calculate non-voluntary switch
-	nonvol = getNonVoluntary(LinkedList);	
+	nonVoluntary = getNonVoluntary(LinkedList);	
 
     //calculate CPU utilization
-    float CPU = 100 / num_process;
+    float CPU = 100 / numProcess;
 
     //calculate throughput
-    float throughput = (float)pidUnique / total_burst;
+    float throughput = (float)pidUnique / totalBurst;
 
 	//calculate turnaround time
-	double avg_turnaround_time = (double)total_turnaround_time / pidUnique;
+	double averageTurnAround = (double)totalTurnAround / pidUnique;
 
 	//calculate waiting time
-	double avg_waiting_time = (double)total_wait_time / pidUnique;	
+	double averageWaiting = (double)totalWaitTime / pidUnique;	
 
 	//calculate response time
-	float avg_response_time = (float)total_response_time / pidUnique;
+	float averageResponse = (float)totalResponseTime / pidUnique;
 
 	//prints out pidUnique, nonvoluntary, CPU, throughput, turnaround, waiting, and response time
-	fprintf(stdout, "%d\n%d\n%.2f\n%.2f\n%.2lf\n%.2lf\n%.2f\n", pidUnique, nonvol, CPU, throughput, avg_turnaround_time, avg_waiting_time, avg_response_time);
+	fprintf(stdout, "%d\n%d\n%.2f\n%.2f\n%.2lf\n%.2lf\n%.2f\n", pidUnique, nonVoluntary, CPU, throughput, averageTurnAround, averageWaiting, averageResponse);
 
 	free(LinkedList);
 	return EXIT_SUCCESS;
