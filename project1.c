@@ -8,9 +8,9 @@ struct LinkedList
 {
 	struct unique_pid 
 	{
-		int current_runtime;
-		int total_runtime;
-		int start_time;
+		int currentRunTime;
+		int totalRunTime;
+		int startTime;
 		int value;
 	} unique_pid;
 
@@ -54,7 +54,7 @@ LinkedList * unique(LinkedList *node, int p)
 		return unique(node->next, p);
 }
 
-//search for non voulntary context switches
+//searchs for non voulntary context switches
 void searchNonVoluntary(LinkedList *head)
  {
 	LinkedList * current = head;
@@ -101,6 +101,7 @@ int getNonVoluntary(LinkedList *head)
 	return sum;
 }
 
+//insert into linked list
 void insert(LinkedList **head, int pid_t, int burst_t, int priority_t) 
 {
 	if ((*head) == NULL) 
@@ -109,7 +110,7 @@ void insert(LinkedList **head, int pid_t, int burst_t, int priority_t)
 		(*head)->pid = pid_t;
 		(*head)->burst = burst_t;
 		(*head)->priority = priority_t;
-		(*head)->unique_pid.total_runtime = 0;
+		(*head)->unique_pid.totalRunTime = 0;
 		(*head)->nonvol = 0;
 		(*head)->next = NULL;
 	}
@@ -122,13 +123,13 @@ void insert(LinkedList **head, int pid_t, int burst_t, int priority_t)
 		if(unique((*head), (*head)->pid) == (*head)) 
 		{
 			(*head)->unique_pid.value = (*head)->pid;
-			(*head)->unique_pid.total_runtime = (*head)->burst;
-        	(*head)->unique_pid.start_time = 0;
+			(*head)->unique_pid.totalRunTime = (*head)->burst;
+        	(*head)->unique_pid.startTime = 0;
 		}
 		//if it's not unique add to the unique PID's total runtime
 		else 
 		{
-			(*head)->unique_pid.total_runtime += (*head)->unique_pid.total_runtime;
+			(*head)->unique_pid.totalRunTime += (*head)->unique_pid.totalRunTime;
 		}
 	}
 
