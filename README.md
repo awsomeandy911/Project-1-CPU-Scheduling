@@ -6,7 +6,7 @@ Andy Le
 #Build
 Command "make all" will run the code in project0.c
 Command "make clean" will clear any executables generated.
-Command "cat testfile.txt|./project0" will tests inputs in project0.c.
+Command "cat testfile.txt|./project1" will tests inputs in project1.c.
 
 #Functions
 exists - checks if pid exists in the linked list
